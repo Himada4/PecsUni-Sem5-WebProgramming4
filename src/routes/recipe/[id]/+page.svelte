@@ -27,8 +27,6 @@
         sugar: 0
     };
 
-    // TODO: Calculate caloric breakdown percentages (protein, fat, carbs) from macronutrient values when displaying nutrition info
-
 
     let recipe: IRecipe;
 
