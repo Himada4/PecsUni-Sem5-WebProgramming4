@@ -33,10 +33,7 @@ CREATE TABLE IF NOT EXISTS users (
 -- Create Auth Table
 CREATE TABLE IF NOT EXISTS auth (
     user_id INTEGER PRIMARY KEY,
-    email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    failed_attempts INTEGER DEFAULT 0,
-    lock_until DATETIME,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
@@ -52,7 +49,12 @@ CREATE TABLE IF NOT EXISTS recipes (
      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
      FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+`;
 
+export const db = await initDB(dbPath, schema);
+
+
+/*
 CREATE TABLE IF NOT EXISTS ingredient_nutrition (
     id INTEGER PRIMARY KEY AUTOINCREMENT,         -- Unique identifier for each nutrition record
     ingredient_id INT NOT NULL,                -- Reference to your ingredient table (foreign key if exists)
@@ -86,9 +88,5 @@ CREATE TABLE IF NOT EXISTS ingredient_nutrition (
     -- Timestamp for caching management
     fetched_at DATETIME DEFAULT CURRENT_TIMESTAMP  -- When this data was fetched
 );
-
-
-`;
-
-export const db = await initDB(dbPath, schema);
+ */
 
