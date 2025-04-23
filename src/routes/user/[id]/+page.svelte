@@ -1,18 +1,28 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { page } from '$app/state';
+    import type { DBRecipe } from '$lib/databaseManagement/DBInterfaces';
 
     let userId: string | undefined;
-    let username: string = 'Loading...';
-    let joined: string = 'Loading...';
-    let recipes: string[] = [];
 
-    interface Recipe {
-        recipeId: number;
+    interface IRecipe {
+        recipe_id: string;
         title: string;
         description: string;
-        recipeCreated: string;
+        created_at: string;
     }
+
+    interface IUser {
+        username: string;
+        joined: string;
+    }
+
+    let recipes: IRecipe[] = [];
+    let user: IUser = {
+        username: "Loading...",
+        joined: "Loading..."
+    }
+
 
     onMount(() => {
         userId = page.params.id;
@@ -38,23 +48,18 @@
             const userData = await userRes.json();
             const recipeData = recipesRes.ok ? await recipesRes.json() : [];
 
-            console.log(userData);
+            user.username = userData.username;
+            user.joined = userData.created_at;
 
-            // Assign values based on fetched data
-            username = userData.username;
-            joined = userData.created_at;
-
-            const recipesList = await Promise.all(recipeData.map(async (recipe: any) => {
-
-                // Return a new object with title, description, and username
+            const recipesList = await Promise.all(recipeData.map(async (recipe: DBRecipe) => {
                 return {
-                    recipeId: recipe.recipe_id,  // Corrected: Use `recipe.recipe_id`
+                    recipe_id: recipe.recipe_id,
                     title: recipe.title,
                     description: recipe.description,
-                    recipeCreated: recipe.created_at
+                    created_at: recipe.created_at
                 };
             }));
-            recipes = recipes = recipesList.filter((recipe: any) => recipe !== null);
+            recipes = recipesList.filter((recipe: IRecipe) => recipe !== null);
 
         } catch (error) {
             console.error("Error fetching user data:", error);
@@ -67,20 +72,20 @@
     <h1>User Profile</h1>
 
     <p><strong>User ID:</strong> {userId}</p>
-    <p><strong>Username:</strong> {username}</p>
-    <p><strong>Joined:</strong> {joined}</p>
+    <p><strong>Username:</strong> {user.username}</p>
+    <p><strong>Joined:</strong> {user.joined}</p>
 
     <h2>Recipes</h2>
     <ul>
         {#if recipes.length > 0}
-            {#each recipes as recipe}
+            {#each recipes as recipe (recipe.recipe_id)}
                 <li>
                     <h3>
-                        <a href={`/recipe/${recipe.recipeId}`}>{recipe.title}</a>
+                        <a href={`/recipe/${recipe.recipe_id}`}>{recipe.title}</a>
                     </h3>
                     <p>{recipe.description}</p>
                     <small>
-                        Created on: {new Date(recipe.recipeCreated).toLocaleDateString()}
+                        Created on: {new Date(recipe.created_at).toLocaleDateString()}
                     </small>
                 </li>
             {/each}

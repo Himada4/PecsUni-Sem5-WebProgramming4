@@ -3,19 +3,30 @@
     import { page } from '$app/state';
     import * as BBCodeParser from 'bbcode';
 
-
     let recipeId: string | undefined;
 
+    //DEBUG SWITCH (Since Spoonacular has 150 calls limit per day)
+    const enable = false;
+
     interface IRecipe {
-        recipeId: number;
+        recipe_id: number;
         title: string;
         description: string;
         ingredients: Record<string, string>;
         instructions: string;
         thumbnailUrl: string;
-        userId: number;
+        user_id: number;
         username: string;
         recipeCreated: string;
+    }
+
+    interface Macronutrients {
+        calories: number;
+        protein: number;
+        fat: number;
+        carbohydrates: number;
+        fiber: number;
+        sugar: number;
     }
 
     const totalNutrients: Macronutrients = {
@@ -27,20 +38,23 @@
         sugar: 0
     };
 
-
     let recipe: IRecipe;
 
-    // When the component mounts, fetch the recipe details using the recipeId from the URL
+    let calcStatus = 1;
+
     onMount(() => {
-        recipeId = page.params.id;  // Get recipeId from the URL params
+        recipeId = page.params.id;
         console.log('Recipe ID from route params:', recipeId);
 
         if (recipeId) {
+
             fetchRecipeData(recipeId);
+
         }
     });
 
     async function fetchRecipeData(recipeId: string) {
+        calcStatus = 1;
         console.log(`[fetchRecipeData] Fetching data for recipeId: ${recipeId}`);
         try {
             const recipeRes = await fetch(`/api/recipes/${recipeId}`);
@@ -59,49 +73,35 @@
 
             const userData = await userRes.json();
 
-            let formattedInstructions = "loading"
+            let formattedInstructions = "Loading..."
             BBCodeParser.parse(recipeData.instructions, function(content : string) {
                 formattedInstructions = content;
-                //console.log("Parsed Instructions:", formattedInstructions);
             });
 
-            // Assign formatted recipe object
             recipe = {
-                recipeId: recipeData.recipe_id,
+                recipe_id: recipeData.recipe_id,
                 title: recipeData.title,
                 description: recipeData.description,
                 ingredients: JSON.parse(recipeData.ingredients),
                 instructions: formattedInstructions,
                 thumbnailUrl: recipeData.thumbnail_url,
-                userId: userData.user_id,
+                user_id: userData.user_id,
                 username: userData.username,
                 recipeCreated: recipeData.created_at
             };
-            //console.log(recipe);
             await fetchRecipeNutrientFact(recipe);
 
 
         } catch (error) {
             console.error("[fetchRecipeData] Error fetching recipe data:", error);
+            calcStatus = 2;
         }
     }
 
-    const enable = false;
-
-    interface Macronutrients {
-        calories: number;
-        protein: number;
-        fat: number;
-        carbohydrates: number;
-        fiber: number;
-        sugar: number;
-    }
 
     async function fetchRecipeNutrientFact(recipeObject: IRecipe) {
 
         const apiKey = import.meta.env.VITE_SPOONACULAR_API_KEY;
-
-
 
         try {
 
@@ -118,9 +118,9 @@
                 // If amount is only a number (like "2")
                 if (!isNaN(Number(amount))) {
                     amt = Number(amount);
-                    unit = "";  // No unit provided
+                    unit = "";
                 }
-                // If amount has both number and text
+                // If amount has both number and unit
                 else if (/\d+\s?[a-zA-Z]+/.test(amount)) {
                     // Match pattern: (number)(unit) or (number) (unit)
                     const match = amount.match(/^(\d+(?:\.\d+)?)\s*([a-zA-Z]+)$/);
@@ -128,7 +128,6 @@
                         amt = Number(match[1]);
                         unit = match[2];
                     } else {
-                        // Skip if format is invalid
                         console.log(`Skipping ingredient "${ingredientName}" due to invalid amount format: ${amount}`);
                         continue;
                     }
@@ -140,7 +139,7 @@
                 }
 
 
-                console.log({ query, amt, unit });
+                //console.log({ query, amt, unit });
                 const searchURL= !enable ? "" : `https://api.spoonacular.com/food/ingredients/search?apiKey=${apiKey}&query=${query}`;
                 const searchRes = await fetch(searchURL);
                 const searchData = await searchRes.json();
@@ -157,7 +156,7 @@
                 const infoRes = await fetch(infoURL);
                 const infoData = await infoRes.json();
 
-                console.log(infoData);
+                //console.log(infoData);
 
                 const nutrients = infoData.nutrition.nutrients;
 
@@ -185,7 +184,6 @@
                 }
             }
 
-            console.log("Total Macronutrients for this recipe:", totalNutrients);
             // Expected units from Spoonacular API:
             // calories → kcal
             // protein, fat, carbohydrates, fiber, sugar → g
@@ -195,12 +193,11 @@
             totalNutrients.fiber = round(totalNutrients.fiber);
             totalNutrients.protein = round(totalNutrients.protein);
             totalNutrients.sugar = round(totalNutrients.sugar);
-            console.log("Total Macronutrients for this recipe:", totalNutrients);
-
-
+            calcStatus = 0;
 
         } catch (error) {
             console.error("Error fetching recipe nutrition facts:", error);
+            calcStatus = 2;
         }
 
         console.log(recipeObject.ingredients);
@@ -209,10 +206,6 @@
     function round(value: number, decimals: number = 2): number {
         return Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
     }
-
-
-
-
 </script>
 
 <main>
@@ -228,7 +221,7 @@
 
         <h3>Ingredients:</h3>
         <ul>
-            {#each Object.entries(recipe.ingredients) as [ingredient, amount]}
+            {#each Object.entries(recipe.ingredients) as [ingredient, amount] (ingredient)}
                 <li>{ingredient}: {amount}</li>
             {/each}
         </ul>
@@ -236,20 +229,29 @@
         <h3>Instructions:</h3>
         <p>{@html recipe.instructions}</p>
 
-        <small>Submitted by: <a href={`/user/${recipe.userId}`}>{recipe.username}</a></small>
+        <small>Submitted by: <a href={`/user/${recipe.user_id}`}>{recipe.username}</a></small>
 
         <small>Created on: {new Date(recipe.recipeCreated).toLocaleDateString()}</small>
 
         <!-- Nutritional Facts Panel -->
         <h3>Nutritional Information:</h3>
-        <div class="nutritional-facts">
-            <p><strong>Calories:</strong> {totalNutrients.calories} kcal</p>
-            <p><strong>Carbohydrates:</strong> {totalNutrients.carbohydrates} g</p>
-            <p><strong>Fat:</strong> {totalNutrients.fat} g</p>
-            <p><strong>Protein:</strong> {totalNutrients.protein} g</p>
-            <p><strong>Fiber:</strong> {totalNutrients.fiber} g</p>
-            <p><strong>Sugar:</strong> {totalNutrients.sugar} g</p>
-        </div>
+
+        {#if calcStatus === 1}
+            <p>Calculating nutrition...</p>
+        {:else if calcStatus === 2}
+            <p style="color: red;">An error occurred while calculating nutrition.</p>
+        {:else}
+            <div class="nutritional-facts">
+                <p><strong>Calories:</strong> {totalNutrients.calories} kcal</p>
+                <p><strong>Carbohydrates:</strong> {totalNutrients.carbohydrates} g</p>
+                <p><strong>Fat:</strong> {totalNutrients.fat} g</p>
+                <p><strong>Protein:</strong> {totalNutrients.protein} g</p>
+                <p><strong>Fiber:</strong> {totalNutrients.fiber} g</p>
+                <p><strong>Sugar:</strong> {totalNutrients.sugar} g</p>
+            </div>
+        {/if}
+
+
     {/if}
 </main>
 

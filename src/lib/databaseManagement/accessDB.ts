@@ -2,9 +2,9 @@ import * as fs from "fs";
 import {open} from "sqlite";
 import sqlite3 from "sqlite3";
 
-const dbPath = "src/lib/database.db"
+const dbPath = "src/lib/databaseManagement/database.db"
 
-async function initDB(path: string, schema: string) {
+async function openDBConnection(path: string, schema: string) {
     const exists = fs.existsSync(path);
     const db = await open({
         filename: path,
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS recipes (
 );
 `;
 
-export const db = await initDB(dbPath, schema);
+export const db = await openDBConnection(dbPath, schema);
 
 
 /*
@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS ingredient_nutrition (
     iron FLOAT,                                -- Iron (mg)
     vitamin_b12 FLOAT,                         -- Vitamin B12 (µg)
     vitamin_b6 FLOAT,                          -- Vitamin B6 (mg)
-    vitamin_c FLOAT,                           -- Vitamin C (mg)
+    vitamin_c FLOAT,                           -- vitamin C (mg)
     magnesium FLOAT,                           -- Magnesium (mg)
     phosphorus FLOAT,                          -- Phosphorus (mg)
     selenium FLOAT,                            -- Selenium (µg)
