@@ -4,7 +4,7 @@
 
 	// The recipe object to be sent
 	const newRecipe = {
-		user_id: 3,
+		user_id: 1,
 		title: "Spaghetti Bolognese",
 		description: "A hearty Italian pasta dish",
 		ingredients: JSON.stringify({
@@ -17,7 +17,7 @@
 			"Pepper": "to taste"
 		}),
 		instructions: "[b]Step 1:[/b] Boil spaghetti. [b]Step 2:[/b] Cook beef with sauce.",
-		thumbnail_url: "https://example.com/image.jpg"
+		thumbnail_url: "example.com/image.png"
 	};
 
 	async function submitRecipe() {

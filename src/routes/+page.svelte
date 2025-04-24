@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import RecipePanel from '$lib/components/RecipePanel.svelte';
+    import RecipeCatalogItem from '$lib/components/RecipeCatalogItem.svelte';
     import type { DBRecipe } from '$lib/databaseManagement/DBInterfaces';
 
     interface IRecipe {
@@ -59,7 +59,7 @@
 
 <div class="catalogContainer">
     {#each recipes as recipe (recipe.recipe_id)}
-        <RecipePanel {recipe} />
+        <RecipeCatalogItem {recipe} />
     {/each}
 </div>
 

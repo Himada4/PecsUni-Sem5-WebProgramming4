@@ -2,15 +2,22 @@
     import { onMount } from 'svelte';
     import { page } from '$app/state';
     import type { DBRecipe } from '$lib/databaseManagement/DBInterfaces';
+    import UserRecipeItem from '$lib/components/UserRecipeItem.svelte';
+    import EditRecipeModal from '$lib/components/EditRecipeModal.svelte';
 
     let userId: string | undefined;
 
+    let isLoggedIn = true;
+
+    let selectedRecipe: DBRecipe | null = null;
+
     interface IRecipe {
-        recipe_id: string;
+        recipe_id: number;
         title: string;
         description: string;
         created_at: string;
     }
+
 
     interface IUser {
         username: string;
@@ -66,6 +73,72 @@
         }
 
     }
+
+    async function handleDelete(id: number) {
+        const confirmed = confirm("Are you sure you want to delete this recipe?");
+        if (!confirmed) return;
+
+        const res = await fetch(`/api/recipes/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            recipes = recipes.filter(r => r.recipe_id !== id);
+        } else {
+            const error = await res.json();
+            alert("Failed to delete: " + error?.error);
+        }
+    }
+
+    //EDIT RECIPE
+
+    async function handleEdit(id: number) {
+        try {
+            const response = await fetch(`/api/recipes/${id}`);
+            selectedRecipe = await response.json();
+        } catch (error) {
+            console.error('Failed to fetch recipe details:', error);
+        }
+    }
+
+    async function handleSave(updatedRecipe: DBRecipe) {
+        try {
+            const response = await fetch(`/api/recipes/${updatedRecipe.recipe_id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedRecipe)
+            });
+
+            if (!response.ok) {
+                console.error('Failed to update the recipe');
+                return;
+            }
+
+            const updatedIRecipe: IRecipe = {
+                recipe_id: updatedRecipe.recipe_id,
+                title: updatedRecipe.title,
+                description: updatedRecipe.description,
+                created_at: updatedRecipe.created_at,
+            };
+
+            console.log("before", recipes);
+
+            // Create a new array with the updated recipe to trigger reactivity
+            recipes = [
+                ...recipes.filter(r => r.recipe_id !== updatedIRecipe.recipe_id),
+                updatedIRecipe // Add the updated recipe
+            ];
+
+            console.log("after", recipes);
+
+        } catch (error) {
+            console.error('Error saving the recipe:', error);
+        } finally {
+            handleCloseModal();
+        }
+    }
+
+
+    function handleCloseModal() {
+        selectedRecipe = null;
+    }
 </script>
 
 <main>
@@ -79,19 +152,18 @@
     <ul>
         {#if recipes.length > 0}
             {#each recipes as recipe (recipe.recipe_id)}
-                <li>
-                    <h3>
-                        <a href={`/recipe/${recipe.recipe_id}`}>{recipe.title}</a>
-                    </h3>
-                    <p>{recipe.description}</p>
-                    <small>
-                        Created on: {new Date(recipe.created_at).toLocaleDateString()}
-                    </small>
-                </li>
+                <UserRecipeItem {recipe} onDelete={handleDelete} onEdit={handleEdit} showControls={isLoggedIn}/>
             {/each}
         {:else}
             <li>This user hasn't submitted any recipes yet.</li>
         {/if}
     </ul>
 
+    {#if selectedRecipe}
+        <EditRecipeModal
+          recipe={selectedRecipe}
+          onClose={handleCloseModal}
+          onSave={handleSave}
+        />
+    {/if}
 </main>

@@ -206,6 +206,8 @@
     function round(value: number, decimals: number = 2): number {
         return Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
     }
+
+
 </script>
 
 <main>
@@ -215,7 +217,17 @@
         <h2>{recipe.title}</h2>
         <p><strong>Description:</strong> {recipe.description}</p>
 
-        {#if recipe.thumbnailUrl}
+        {#if recipe.thumbnailUrl?.endsWith('.mp4')}
+            <video
+              src={recipe.thumbnailUrl}
+              autoplay
+              loop
+              muted
+              playsinline
+              width="200"
+            ></video>
+
+        {:else if recipe.thumbnailUrl}
             <img src={recipe.thumbnailUrl} alt="Recipe Thumbnail" width="200" />
         {/if}
 
