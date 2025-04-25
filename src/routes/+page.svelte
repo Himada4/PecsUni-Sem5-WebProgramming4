@@ -14,9 +14,9 @@
 
     let recipes: IRecipe[] = [];
 
-
     onMount(async () => {
         try {
+            console.log("hi this is " + data.user_id);
 
             const res = await fetch('/api/recipes', {
                 method: 'GET'
@@ -27,9 +27,9 @@
                 return;
             }
 
-            const data = await res.json();
+            const resData = await res.json();
 
-            const recipesWithUsernames = await Promise.all(data.map(async (recipe: DBRecipe) => {
+            const recipesWithUsernames = await Promise.all(resData.map(async (recipe: DBRecipe) => {
                 const userRes = await fetch(`/api/users/${recipe.user_id}`);
 
                 if (!userRes.ok) {
@@ -55,9 +55,12 @@
             console.error("Error fetching data:", error);
         }
     });
+
+
 </script>
 
 <div class="catalogContainer">
+<!--    <h1>Hello {data.user_id ? 'friend' : 'stranger'}!</h1>-->
     {#each recipes as recipe (recipe.recipe_id)}
         <RecipeCatalogItem {recipe} />
     {/each}

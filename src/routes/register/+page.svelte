@@ -15,7 +15,7 @@
 
 		try {
 			// Sending the registration data to the backend API
-			const response = await fetch('/api/users', {
+			const response = await fetch('/api/session/register', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -35,7 +35,6 @@
 			error = 'Failed to register. Please try again later.';
 		}
 
-		// Mock successful response for now
 		success = 'Registration successful!';
 	}
 </script>
