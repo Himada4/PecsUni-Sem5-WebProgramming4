@@ -1,0 +1,37 @@
+@font-face {
+    font-family: 'Helvetica';
+    src: url('$lib/fontfamily/Helvetica.ttf');
+}
+@font-face {
+    font-family: 'Montserrat';
+    src: url('$lib/fontfamily/Montserrat-VariableFont_wght.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Montserrat-Italic';
+    src: url('$lib/fontfamily/Montserrat-Italic-VariableFont_wght.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+h1, h2, h3 {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+p, span, small, li {
+    font-family: 'Montserrat', 'Arial', sans-serif;
+}
+
+i {
+    font-family: 'Montserrat-Italic', sans-serif;
+}
+
+

@@ -1,131 +1,98 @@
-<script>
-    import { writable } from 'svelte/store';
-    import { goto } from '$app/navigation'; // Import `goto` for navigation
+<script lang="ts">
+    import { onMount } from 'svelte';
+    export let loggedIn: boolean;
+    export let userId: string | undefined;
+    let scrolled = false;
+    import logo from '$lib/assets/logo.png';
 
-    // Create a store to manage logged-in status
-    let isLoggedIn = writable(false);
+    async function logout() {
+        const res = await fetch('/api/session/logout', {
+            method: 'POST'
+        });
 
-    // Create reactive variables for username/password in the login panel
-    let username = '';
-    let password = '';
-
-    // Track the visibility of the login panel
-    let loginPanelVisible = writable(false);
-
-    // Handle login button click
-    async function handleLogin() {
-        // For now, simulate login by toggling the logged-in status
-        if (username && password) {
-            isLoggedIn.set(true);
-            loginPanelVisible.set(false); // Hide the login panel
-            console.log('Logged in with:', username); // For debugging
-
-            // Use `goto` to navigate to the profile page after login
-            await goto(`/user/${username}`); // Redirect to the profile page (replace with actual user ID logic)
+        if (res.ok) {
+            window.location.href = '/';
+        } else {
+            console.error('Logout failed');
         }
     }
 
-    // Handle logout
-    function handleLogout() {
-        isLoggedIn.set(false);
-    }
+    onMount(() => {
+        const handleScroll = () => {
+            scrolled = window.scrollY > 0;
+        };
 
-    // Optional: Redirect to the registration page (simulate behavior)
-    function handleRegisterRedirect() {
-        // Use `goto` to navigate to the registration page
-        goto('/register');
-    }
+        window.addEventListener('scroll', handleScroll);
+        handleScroll(); // Run once on load
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    });
 </script>
 
-<nav class="navbar">
-    <div class="brand">MySite</div>
-    <ul class="nav-links">
-        <li><a href="/">Home</a></li>
-
-        <!-- Profile link, changes behavior based on login state -->
-        {#if $isLoggedIn}
-            <li><a href="/user/{userId}">Profile</a></li>
+<nav class="navbar {scrolled ? 'scrolled' : ''}">
+    <div class="left">
+        <a href="/">Home</a>
+        {#if loggedIn}
+            <a href={`/user/${userId}`}>Profile</a>
+            <button on:click={logout} class="link-button">Logout</button>
         {:else}
-            <li>
-                <a href="javascript:void(0)" on:click={() => loginPanelVisible.set(true)}>Profile</a>
-                {#if $loginPanelVisible}
-                    <div class="login-popup">
-                        <div>
-                            <label for="username">Username:</label>
-                            <input type="text" id="username" bind:value={username} />
-                        </div>
-                        <div>
-                            <label for="password">Password:</label>
-                            <input type="password" id="password" bind:value={password} />
-                        </div>
-                        <button on:click={handleLogin}>Login</button>
-                        <button on:click={handleRegisterRedirect}>Register</button>
-                    </div>
-                {/if}
-            </li>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
         {/if}
-    </ul>
-</nav>
+    </div>
 
-<!-- Optional: Logout button if logged in -->
-{#if $isLoggedIn}
-    <button on:click={handleLogout}>Logout</button>
-{/if}
+    <div class="right">
+        <img src={logo} alt="Website logo" style="height: 40px;" />
+    </div>
+</nav>
 
 <style>
     .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 1.5rem 2rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem;
-        background-color: #333;
-        color: white;
+        transition: all 0.1s ease;
+        z-index: 1000;
+
     }
 
-    .nav-links {
-        list-style: none;
-        display: flex;
-        gap: 1rem;
+    .navbar.scrolled {
+        background: rgba(96, 195, 227, 0.8); /* light blue with more solid */
+        padding: 1rem 2rem; /* slightly smaller */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
     }
 
-    .nav-links a {
-        color: white;
+    .left a, .left button {
+        margin-right: 1.5rem;
         text-decoration: none;
+        color: #e4e6e6;
+        font-weight: 600;
+
     }
 
-    .nav-links a:hover {
+    .left a:hover, .left button:hover {
         text-decoration: underline;
     }
 
-    /* Styling for the login panel */
-    .login-popup {
-        position: absolute;
-        background-color: white;
-        border: 1px solid #ccc;
-        padding: 1rem;
-        top: 50px;
-        right: 10px;
-        width: 200px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .login-popup input {
-        padding: 5px;
-        margin: 5px 0;
-    }
-
-    .login-popup button {
-        padding: 5px;
-        margin: 5px 0;
-        background-color: #4CAF50;
-        color: white;
+    .link-button {
+        background: none;
         border: none;
+        color: inherit;
+        font: inherit;
         cursor: pointer;
+        padding: 0;
     }
 
-    .login-popup button:hover {
-        background-color: #45a049;
+    .right img {
+        height: 40px;
     }
 </style>

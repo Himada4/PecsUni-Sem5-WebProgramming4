@@ -1,8 +1,18 @@
 <!-- src/routes/+layout.svelte -->
 <script>
     import Navbar from '$lib/components/Navbar.svelte';
+    import Background from '$lib/components/Background.svelte';
+    import AddRecipeButton from '$lib/components/addRecipeButton.svelte';
+    export let data;
+    import { page } from '$app/state';
 </script>
 
-<Navbar /> <!-- Navbar is rendered in all pages -->
+<Navbar loggedIn={data.loggedIn} userId={data.userId} />
 
-<slot /> <!-- This is where the page content will go -->
+<Background />
+
+<AddRecipeButton isLoggedIn={page.data.isLoggedIn} />
+
+<slot />
+
+

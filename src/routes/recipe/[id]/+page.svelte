@@ -210,61 +210,107 @@
 
 </script>
 
-<main>
+<main class="recipe-container">
     {#if recipe}
         <h1>Recipe Details</h1>
 
-        <h2>{recipe.title}</h2>
-        <p><strong>Description:</strong> {recipe.description}</p>
+        <div class="recipe-content">
+            <h2>{recipe.title}</h2>
+            <p><strong>Description:</strong> {recipe.description}</p>
 
-        {#if recipe.thumbnailUrl?.endsWith('.mp4')}
-            <video
-              src={recipe.thumbnailUrl}
-              autoplay
-              loop
-              muted
-              playsinline
-              width="200"
-            ></video>
+            {#if recipe.thumbnailUrl?.endsWith('.mp4')}
+                <video
+                        src={recipe.thumbnailUrl}
+                        autoplay
+                        loop
+                        muted
+                        playsinline
+                        class="recipe-media"
+                ></video>
+            {:else if recipe.thumbnailUrl}
+                <img src={recipe.thumbnailUrl} alt="Recipe Thumbnail" class="recipe-media" />
+            {/if}
 
-        {:else if recipe.thumbnailUrl}
-            <img src={recipe.thumbnailUrl} alt="Recipe Thumbnail" width="200" />
-        {/if}
+            <h3>Ingredients:</h3>
+            <ul>
+                {#each Object.entries(recipe.ingredients) as [ingredient, amount] (ingredient)}
+                    <li>{ingredient}: {amount}</li>
+                {/each}
+            </ul>
 
-        <h3>Ingredients:</h3>
-        <ul>
-            {#each Object.entries(recipe.ingredients) as [ingredient, amount] (ingredient)}
-                <li>{ingredient}: {amount}</li>
-            {/each}
-        </ul>
+            <h3>Instructions:</h3>
+            <p>{@html recipe.instructions}</p>
 
-        <h3>Instructions:</h3>
-        <p>{@html recipe.instructions}</p>
-
-        <small>Submitted by: <a href={`/user/${recipe.user_id}`}>{recipe.username}</a></small>
-
-        <small>Created on: {new Date(recipe.recipeCreated).toLocaleDateString()}</small>
-
-        <!-- Nutritional Facts Panel -->
-        <h3>Nutritional Information:</h3>
-
-        {#if calcStatus === 1}
-            <p>Calculating nutrition...</p>
-        {:else if calcStatus === 2}
-            <p style="color: red;">An error occurred while calculating nutrition.</p>
-        {:else}
-            <div class="nutritional-facts">
-                <p><strong>Calories:</strong> {totalNutrients.calories} kcal</p>
-                <p><strong>Carbohydrates:</strong> {totalNutrients.carbohydrates} g</p>
-                <p><strong>Fat:</strong> {totalNutrients.fat} g</p>
-                <p><strong>Protein:</strong> {totalNutrients.protein} g</p>
-                <p><strong>Fiber:</strong> {totalNutrients.fiber} g</p>
-                <p><strong>Sugar:</strong> {totalNutrients.sugar} g</p>
+            <div class="submitted-info">
+                <small>Submitted by: <a href={`/user/${recipe.user_id}`}>{recipe.username}</a></small>
+                <br />
+                <small>Created on: {new Date(recipe.recipeCreated).toLocaleDateString()}</small>
             </div>
-        {/if}
 
+            <h3>Nutritional Information:</h3>
 
+            {#if calcStatus === 1}
+                <p>Calculating nutrition...</p>
+            {:else if calcStatus === 2}
+                <p style="color: red;">An error occurred while calculating nutrition.</p>
+            {:else}
+                <div class="nutritional-facts">
+                    <p><strong>Calories:</strong> {totalNutrients.calories} kcal</p>
+                    <p><strong>Carbohydrates:</strong> {totalNutrients.carbohydrates} g</p>
+                    <p><strong>Fat:</strong> {totalNutrients.fat} g</p>
+                    <p><strong>Protein:</strong> {totalNutrients.protein} g</p>
+                    <p><strong>Fiber:</strong> {totalNutrients.fiber} g</p>
+                    <p><strong>Sugar:</strong> {totalNutrients.sugar} g</p>
+                </div>
+            {/if}
+        </div>
     {/if}
 </main>
+
+<style>
+    .recipe-container {
+        width: 50%;
+        margin: 4rem auto 0 auto;
+        padding: 0 1rem;
+    }
+
+    .recipe-content {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+    }
+
+    h1, h2, h3 {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .recipe-media {
+        display: block;
+        margin: 2rem auto;
+        max-width: 100%;
+        border-radius: 8px;
+    }
+
+    ul {
+        padding-left: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .submitted-info {
+        margin-top: 2rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .nutritional-facts {
+        margin-top: 2rem;
+        background: #f0f8ff;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+</style>
 
 

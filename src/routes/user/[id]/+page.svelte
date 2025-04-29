@@ -7,9 +7,9 @@
 
     let userId: string | undefined;
 
-    let isLoggedIn = true;
-
     let selectedRecipe: DBRecipe | null = null;
+
+    export let data: { isOwner: boolean };
 
     interface IRecipe {
         recipe_id: number;
@@ -139,31 +139,96 @@
     function handleCloseModal() {
         selectedRecipe = null;
     }
+
+
 </script>
 
-<main>
-    <h1>User Profile</h1>
-
-    <p><strong>User ID:</strong> {userId}</p>
-    <p><strong>Username:</strong> {user.username}</p>
-    <p><strong>Joined:</strong> {user.joined}</p>
-
-    <h2>Recipes</h2>
-    <ul>
-        {#if recipes.length > 0}
-            {#each recipes as recipe (recipe.recipe_id)}
-                <UserRecipeItem {recipe} onDelete={handleDelete} onEdit={handleEdit} showControls={isLoggedIn}/>
-            {/each}
+<main class="user-container">
+    <div class="user-content">
+        {#if data.isOwner}
+            <p class="owner-message">Welcome to <strong>your</strong> profile. You can edit your recipes!</p>
         {:else}
-            <li>This user hasn't submitted any recipes yet.</li>
+            <p class="visitor-message">You are visiting someone else's profile.</p>
         {/if}
-    </ul>
 
-    {#if selectedRecipe}
-        <EditRecipeModal
-          recipe={selectedRecipe}
-          onClose={handleCloseModal}
-          onSave={handleSave}
-        />
-    {/if}
+        <h1>User Profile</h1>
+
+        <div class="user-info">
+            <p><strong>User ID:</strong> {userId}</p>
+            <p><strong>Username:</strong> {user.username}</p>
+            <p><strong>Joined:</strong> {user.joined}</p>
+        </div>
+
+        <h2>Recipes</h2>
+        <ul class="recipe-list">
+            {#if recipes.length > 0}
+                {#each recipes as recipe (recipe.recipe_id)}
+                    <UserRecipeItem
+                            {recipe}
+                            onDelete={handleDelete}
+                            onEdit={handleEdit}
+                            showControls={data.isOwner}
+                    />
+                {/each}
+            {:else}
+                <li>This user hasn't submitted any recipes yet.</li>
+            {/if}
+        </ul>
+
+        {#if selectedRecipe}
+            <EditRecipeModal
+                    recipe={selectedRecipe}
+                    onClose={handleCloseModal}
+                    onSave={handleSave}
+            />
+        {/if}
+    </div>
 </main>
+
+
+<style>
+    .user-container {
+        width: 50%;
+        margin: 4rem auto 0 auto;
+        padding: 0 1rem;
+    }
+
+    .user-content {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+    }
+
+    h1, h2 {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .owner-message, .visitor-message {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    .user-info {
+        background: #f9f9f9;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .recipe-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .recipe-list li {
+        background: #f0f8ff;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+</style>

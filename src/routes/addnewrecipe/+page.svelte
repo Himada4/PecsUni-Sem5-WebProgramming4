@@ -4,8 +4,8 @@
 
 	// The recipe object to be sent
 	const newRecipe = {
-		user_id: 1,
-		title: "Spaghetti Bolognese",
+		user_id: 8,
+		title: "testing recipe",
 		description: "A hearty Italian pasta dish",
 		ingredients: JSON.stringify({
 			"Spaghetti": "200g",

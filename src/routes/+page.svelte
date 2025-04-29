@@ -14,9 +14,11 @@
 
     let recipes: IRecipe[] = [];
 
+    export let data: { isLoggedIn: boolean };
+
     onMount(async () => {
         try {
-            console.log("hi this is " + data.user_id);
+            //console.log("hi this is " + data.user_id);
 
             const res = await fetch('/api/recipes', {
                 method: 'GET'
@@ -55,15 +57,49 @@
             console.error("Error fetching data:", error);
         }
     });
-
-
 </script>
 
 <div class="catalogContainer">
-<!--    <h1>Hello {data.user_id ? 'friend' : 'stranger'}!</h1>-->
-    {#each recipes as recipe (recipe.recipe_id)}
-        <RecipeCatalogItem {recipe} />
-    {/each}
+    <div class="catalogContent">
+        <h1>Welcome {data.isLoggedIn ? 'back!' : 'guest!'}</h1>
+        <div class="recipeListContainer">
+            {#each recipes as recipe (recipe.recipe_id)}
+                <RecipeCatalogItem {recipe} />
+            {/each}
+        </div>
+    </div>
 </div>
+
+<style>
+    .catalogContainer {
+        margin-top: 4rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .catalogContent {
+        width: 50%;
+        max-width: 800px;
+
+        background: #e1dad7;
+    }
+
+    .recipeListContainer {
+        padding: 0 1rem;
+    }
+
+
+    .catalogContent h1 {
+        text-align: center;
+        background: #855b49;
+        margin: 0 0 2rem 0;
+        color: white;
+        font-weight: 550;
+    }
+
+</style>
+
+
+
 
 
