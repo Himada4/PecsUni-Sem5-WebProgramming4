@@ -14,7 +14,6 @@ export async function GET() {
 }
 
 export async function POST({ request }) {
-    //TODO: Before adding new recipe, make sure they are logged in.
     try {
         const data = await request.json();
         const { user_id, title, description, ingredients, instructions, thumbnail_url} = data;

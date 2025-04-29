@@ -10,7 +10,6 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			return new Response(JSON.stringify({ message: 'Missing username or password' }), { status: 400 });
 		}
 
-		// Get user and password hash
 		const user = await db.get(
 			`SELECT u.user_id, a.password_hash
 			 FROM users u
@@ -23,13 +22,11 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			return new Response(JSON.stringify({ message: 'Invalid username or password' }), { status: 401 });
 		}
 
-		// Verify password
 		const isValid = await bcrypt.compare(password, user.password_hash);
 		if (!isValid) {
 			return new Response(JSON.stringify({ message: 'Invalid username or password' }), { status: 401 });
 		}
 
-		// Set signed cookie for user_id
 		cookies.set('user_id', user.user_id.toString(), {
 			path: '/',
 			httpOnly: true,

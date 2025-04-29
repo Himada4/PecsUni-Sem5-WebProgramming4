@@ -18,7 +18,6 @@
 
     onMount(async () => {
         try {
-            //console.log("hi this is " + data.user_id);
 
             const res = await fetch('/api/recipes', {
                 method: 'GET'

@@ -5,6 +5,6 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 
     return {
         loggedIn: !!userId,
-        userId // also pass the userId (still a string)
+        userId
     };
 };

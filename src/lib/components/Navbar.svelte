@@ -23,7 +23,7 @@
         };
 
         window.addEventListener('scroll', handleScroll);
-        handleScroll(); // Run once on load
+        handleScroll();
 
         return () => {
             window.removeEventListener('scroll', handleScroll);
@@ -64,8 +64,8 @@
     }
 
     .navbar.scrolled {
-        background: rgba(96, 195, 227, 0.8); /* light blue with more solid */
-        padding: 1rem 2rem; /* slightly smaller */
+        background: rgba(96, 195, 227, 0.8);
+        padding: 1rem 2rem;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);

@@ -1,4 +1,3 @@
-<!-- src/routes/+layout.svelte -->
 <script>
     import Navbar from '$lib/components/Navbar.svelte';
     import Background from '$lib/components/Background.svelte';

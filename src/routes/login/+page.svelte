@@ -15,7 +15,6 @@
 		});
 
 		if (response.ok) {
-			//console.log("Logged in!");
 			window.location.href = '/';
 		} else {
 			const result = await response.json();

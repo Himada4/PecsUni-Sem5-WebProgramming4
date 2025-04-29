@@ -3,13 +3,11 @@
     let isLoading = false;
     let resultMessage = "";
 
-    // Form fields
     let title = "";
     let description = "";
     let instructions = "";
     let thumbnailUrl = "";
 
-    // Ingredients handling
     let ingredientName = "";
     let ingredientAmount = "";
     let ingredientsList: { name: string, amount: string }[] = [];
@@ -33,7 +31,6 @@
         isLoading = true;
         resultMessage = "";
 
-        // Convert ingredients array to object
         const ingredientsObject = ingredientsList.reduce((acc, item) => {
             acc[item.name] = item.amount;
             return acc;
@@ -62,7 +59,6 @@
 
             if (response.ok) {
                 resultMessage = "Recipe added successfully!";
-                // Clear form
                 title = "";
                 description = "";
                 instructions = "";

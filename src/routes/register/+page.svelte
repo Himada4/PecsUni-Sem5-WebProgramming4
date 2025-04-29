@@ -14,7 +14,6 @@
 		}
 
 		try {
-			// Sending the registration data to the backend API
 			const response = await fetch('/api/session/register', {
 				method: 'POST',
 				headers: {

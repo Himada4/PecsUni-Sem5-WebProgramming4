@@ -1,4 +1,3 @@
-//Adds new user
 import bcrypt from 'bcrypt';
 import { db } from '$lib/databaseManagement/accessDB'
 
