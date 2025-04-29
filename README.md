@@ -76,7 +76,7 @@ This project integrates with the [Spoonacular API](https://spoonacular.com/food-
     * **`session/`:** Handles user authentication-related actions (login, logout, registration).
     * **`users/`:** Manages user data (fetching user profiles by `[id]`, fetching a user's recipes).
 #
-* **`src/routes/` 
+* `src/routes/` 
     * `/`: The homepage.
     * `/login`: User login page.
     * `/recipe/[id]`: Displays details for a specific recipe.
