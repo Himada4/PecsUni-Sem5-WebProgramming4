@@ -64,18 +64,15 @@ This project integrates with the [Spoonacular API](https://spoonacular.com/food-
 ### Structure of the Codebase (Simplified Overview)
 
 * **`.env`:** Stores environment variables such as the Spoonacular API key. This is *NOT* part of the repository.
-#
 * **`src/lib/`:** This directory contains reusable modules and utilities for the frontend of the application:
     * **`assets/`:** Stores static assets like images (e.g., `logo.png`).
     * **`components/`:** Houses all the custom Svelte components that make up the user interface (e.g., `Navbar.svelte`, `RecipeCatalogItem.svelte`, `EditRecipeModal.svelte`, etc.).
     * **`databaseManagement/`:** Contains files related to the local SQLite database (`database.db`), including the database file itself and potentially TypeScript modules (`accessDB.ts`, `DBInterfaces.ts`) for interacting with it.
     * **`fontfamily/`:** Stores custom font files used for styling.
-#
 * **`src/routes/api/`:** This directory contains the server-side API endpoints.
     * **`recipes/`:** Manages recipe data (fetching lists, adding new recipes, retrieving, updating, and deleting specific recipes by `[id]`).
     * **`session/`:** Handles user authentication-related actions (login, logout, registration).
     * **`users/`:** Manages user data (fetching user profiles by `[id]`, fetching a user's recipes).
-#
 * `src/routes/` 
     * `/`: The homepage.
     * `/login`: User login page.
