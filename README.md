@@ -1,4 +1,4 @@
-# Food Recipe Sharing Website
+# Food Recipe Sharing Website (University Project)
 
 ## Purpose of the Project
 
