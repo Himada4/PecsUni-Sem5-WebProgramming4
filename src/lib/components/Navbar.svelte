@@ -63,6 +63,7 @@
 
     }
 
+    /*noinspection CssUnusedSymbol*/
     .navbar.scrolled {
         background: rgba(96, 195, 227, 0.8);
         padding: 1rem 2rem;

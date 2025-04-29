@@ -116,7 +116,7 @@
         </div>
 
         <ul class="ingredient-list">
-            {#each ingredientsList as ingredient, index}
+            {#each ingredientsList as ingredient, index (index)}
                 <li>
                     {ingredient.name}: {ingredient.amount}
                     <button type="button" on:click={() => removeIngredient(index)}>Remove</button>
