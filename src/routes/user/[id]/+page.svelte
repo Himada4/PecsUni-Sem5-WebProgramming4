@@ -154,7 +154,6 @@
         <h1>User Profile</h1>
 
         <div class="user-info">
-            <p><strong>User ID:</strong> {userId}</p>
             <p><strong>Username:</strong> {user.username}</p>
             <p><strong>Joined:</strong> {user.joined}</p>
         </div>
@@ -189,7 +188,7 @@
 <style>
     .user-container {
         width: 50%;
-        margin: 4rem auto 0 auto;
+        margin: 5.7rem auto 0 auto;
         padding: 0 1rem;
     }
 

@@ -12,6 +12,8 @@
     let ingredientAmount = "";
     let ingredientsList: { name: string, amount: string }[] = [];
 
+    import BccodeNoticePanel from "$lib/components/BccodeNoticePanel.svelte";
+
 
 
 
@@ -90,6 +92,8 @@
             <textarea bind:value={description} placeholder="Short description" required></textarea>
         </label>
 
+        <BccodeNoticePanel />
+
         <label>
             Instructions:
             <textarea bind:value={instructions} placeholder="Step by step..." required></textarea>
@@ -137,7 +141,7 @@
 <style>
     main {
         max-width: 600px;
-        margin: 4rem auto;
+        margin: 5.7rem auto;
         padding: 2rem;
         background: white;
         border-radius: 8px;

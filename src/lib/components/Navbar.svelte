@@ -44,7 +44,7 @@
     </div>
 
     <div class="right">
-        <img src={logo} alt="Website logo" style="height: 40px;" />
+        <img src={logo} alt="Website logo" style="height: 30px;" />
     </div>
 </nav>
 
@@ -76,8 +76,6 @@
         margin-right: 1.5rem;
         text-decoration: none;
         color: #e4e6e6;
-        font-weight: 600;
-
     }
 
     .left a:hover, .left button:hover {
@@ -88,7 +86,6 @@
         background: none;
         border: none;
         color: inherit;
-        font: inherit;
         cursor: pointer;
         padding: 0;
     }

@@ -1,7 +1,7 @@
 <script>
     import Navbar from '$lib/components/Navbar.svelte';
     import Background from '$lib/components/Background.svelte';
-    import AddRecipeButton from '$lib/components/addRecipeButton.svelte';
+    import AddRecipeButton from '$lib/components/AddRecipeButton.svelte';
     export let data;
     import { page } from '$app/state';
 </script>

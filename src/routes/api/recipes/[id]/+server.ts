@@ -1,4 +1,6 @@
 //Get recipe data of specific ID
+//Delete recipe data of specific ID
+//Edit recipe data of specific ID
 
 import { db } from '$lib/databaseManagement/accessDB';
 import type { RequestEvent } from '@sveltejs/kit';

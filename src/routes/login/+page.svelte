@@ -32,16 +32,8 @@
 		{/if}
 
 		<form on:submit|preventDefault={handleLogin}>
-			<label>
-				Username
-				<input type="text" bind:value={username} required />
-			</label>
-
-			<label>
-				Password
-				<input type="password" bind:value={password} required />
-			</label>
-
+			<input type="text" bind:value={username} placeholder="Username" required />
+			<input type="password" bind:value={password} placeholder="Password" required />
 			<button type="submit">Login</button>
 		</form>
 	</div>

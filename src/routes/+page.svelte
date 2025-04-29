@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import RecipeCatalogItem from '$lib/components/RecipeCatalogItem.svelte';
     import type { DBRecipe } from '$lib/databaseManagement/DBInterfaces';
+    import SearchBar from '$lib/components/SearchBar.svelte';
 
     interface IRecipe {
         recipe_id: number;
@@ -56,14 +57,56 @@
             console.error("Error fetching data:", error);
         }
     });
+
+
+
+    let searchTerm: string = '';
+    let debouncedSearchTerm: string = '';
+
+    function search(term: string) {
+        debouncedSearchTerm = term;
+    }
+
+    function debounce(func: (arg: string) => void, delay: number) {
+        let timeoutId: NodeJS.Timeout | null = null;
+        return function(arg: string) {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            timeoutId = setTimeout(() => {
+                func(arg);
+                timeoutId = null;
+            }, delay);
+        };
+    }
+
+    const debouncedSearch = debounce(search, 300);
+
+    function handleSearchInput(event: Event) {
+        searchTerm = (event.target as HTMLInputElement).value;
+        debouncedSearch(searchTerm);
+    }
+
+    $: filteredRecipes = recipes.filter(recipe =>
+        recipe.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        recipe.description.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+        recipe.username.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+    );
 </script>
 
 <div class="catalogContainer">
     <div class="catalogContent">
         <h1>Welcome {data.isLoggedIn ? 'back!' : 'guest!'}</h1>
+        <SearchBar value={searchTerm} onInput={handleSearchInput} placeholder="Search recipes..." />
         <div class="recipeListContainer">
-            {#each recipes as recipe (recipe.recipe_id)}
+            {#each filteredRecipes as recipe (recipe.recipe_id)}
                 <RecipeCatalogItem {recipe} />
+            {:else}
+                {#if searchTerm}
+                    <p>No recipes found matching "{searchTerm}"</p>
+                {:else}
+                    <p>Loading recipes...</p>
+                {/if}
             {/each}
         </div>
     </div>
@@ -71,7 +114,7 @@
 
 <style>
     .catalogContainer {
-        margin-top: 4rem;
+        margin-top: 5.7rem;
         display: flex;
         justify-content: center;
     }
@@ -84,7 +127,8 @@
     }
 
     .recipeListContainer {
-        padding: 0 1rem;
+        padding: 1rem 1rem 0 1rem;
+
     }
 
 
