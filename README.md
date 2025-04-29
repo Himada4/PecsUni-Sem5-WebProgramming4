@@ -2,7 +2,7 @@
 
 ## Purpose of the Project
 
-This small-scale project aims to create a platform for food lovers to share, discover, and manage their own culinary creations. It provides a platform where users can easily upload their favorite recipes, browse recipes shared by others, and build their personal collection of go-to dishes.
+This small-scale pseudo project aims to create a platform for food lovers to share, discover, and manage their own culinary creations. It provides a platform where users can easily upload their favorite recipes, browse recipes shared by others, and build their personal collection of go-to dishes.
 
 ## Implementation
 
