@@ -6,7 +6,7 @@
     let recipeId: string | undefined;
 
     //DEBUG SWITCH (Since Spoonacular has 150 calls limit per day)
-    const enable = false;
+    const enable = true;
 
     interface IRecipe {
         recipe_id: number;
